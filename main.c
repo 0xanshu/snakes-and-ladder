@@ -7,11 +7,21 @@ int c, turn;
 int board[100];
 char ch;
 
-int dice() { 
-    srand(time(NULL));
-    return rand() % 6 + 1; 
+// Gives out a random number between 1 and 6, and acts like a virtual dice
+int dice()
+{
+    static int initial = 0;
+    if (!initial)
+    {
+        srand(time(NULL));
+        initial = 1;
+    }
+
+    // Generate and return random number between 1 and 6
+    return rand() % 6 + 1;
 }
 
+// Clears out the terminal each time the dice is rolled
 void clearTerminal()
 {
 #ifdef _WIN32
@@ -21,123 +31,157 @@ void clearTerminal()
 #endif
 }
 
-void layout(int a , int b){
+// Creates the layout for the game and also prints the position of Player 1 and Player 2 on the board
+void layout(int a, int b)
+{
 
-    for(int i = 0 ; i < 100 ; i++){
-        board[i] = i+1;
+    for (int i = 0; i < 100; i++)
+    {
+        board[i] = i + 1;
     }
     int j = 0;
-    while(a == board[j]){
-            int n = board[j];
-            board[j] = a;
-            j++;
-        }
-
-    for(int i = board[99] ; i >= board[98] ; i--){
-            
-            if(i == a && i == b){
-                printf("#P12 ");
-            }
-
-            else if (i == a) { 
-                printf("#P1  "); 
-            } 
-                
-            else if (i == b) { 
-                printf("#P2  "); 
-            } 
-
-            else{
-                printf("%d    " , i);
-            }
+    while (a == board[j])
+    {
+        int n = board[j];
+        board[j] = a;
+        j++;
     }
 
-    for(int i = board[97] ; i >= board[90] ; i--){
-            if(i == a && i == b){
-                printf(" #P12 ");
-            }
-            
-            else if (i == a) { 
-                printf(" #P1  "); 
-            } 
-            else if (i == b) { 
-                printf(" #P2  "); 
-            } 
-        
-            else{
-            printf(" %d    " , i);
-            }
+    for (int i = board[99]; i >= board[98]; i--)
+    {
+
+        if (i == a && i == b)
+        {
+            printf("#P12 ");
+        }
+
+        else if (i == a)
+        {
+            printf("#P1  ");
+        }
+
+        else if (i == b)
+        {
+            printf("#P2  ");
+        }
+
+        else
+        {
+            printf("%d    ", i);
+        }
+    }
+
+    for (int i = board[97]; i >= board[90]; i--)
+    {
+        if (i == a && i == b)
+        {
+            printf(" #P12 ");
+        }
+
+        else if (i == a)
+        {
+            printf(" #P1  ");
+        }
+        else if (i == b)
+        {
+            printf(" #P2  ");
+        }
+
+        else
+        {
+            printf(" %d    ", i);
+        }
     }
 
     printf("\n");
     printf("\n");
     printf("\n");
 
-    for(int i = board[8] ; i >= board[1] ; i--){
-        if(i%2 == 0){
-            for(int j = 10*i ;j >= 10*i - 9 ; j--){
+    for (int i = board[8]; i >= board[1]; i--)
+    {
+        if (i % 2 == 0)
+        {
+            for (int j = 10 * i; j >= 10 * i - 9; j--)
+            {
 
-            if(j == a && j == b){
-                printf("#P12  ");
-            }
-                
-            else if (j == a) { 
-                printf("#P1   "); 
-            } 
-            else if (j == b) { 
-                printf("#P2   "); 
-            } 
-                
-            else{
-            printf("%d     " , j);
-            }
-        }
-        printf("\n");
-        printf("\n");
-        printf("\n");
-        }
-
-        else{
-            for(int k = 10*i - 9 ; k <= 10*i ; k++){
-
-                if(k == a && k == b){
-                printf("#P12  ");
+                if (j == a && j == b)
+                {
+                    printf("#P12  ");
                 }
 
-                else if (k == a) { 
-                printf("#P1   "); 
-                } 
-                else if (k == b) { 
-                printf("#P2   "); 
-                } 
-                else{
-                printf("%d     " , k);
+                else if (j == a)
+                {
+                    printf("#P1   ");
                 }
+                else if (j == b)
+                {
+                    printf("#P2   ");
+                }
+
+                else
+                {
+                    printf("%d     ", j);
+                }
+            }
+            printf("\n");
+            printf("\n");
+            printf("\n");
         }
-        printf("\n");
-        printf("\n");
-        printf("\n");
+
+        else
+        {
+            for (int k = 10 * i - 9; k <= 10 * i; k++)
+            {
+
+                if (k == a && k == b)
+                {
+                    printf("#P12  ");
+                }
+
+                else if (k == a)
+                {
+                    printf("#P1   ");
+                }
+                else if (k == b)
+                {
+                    printf("#P2   ");
+                }
+                else
+                {
+                    printf("%d     ", k);
+                }
+            }
+            printf("\n");
+            printf("\n");
+            printf("\n");
         }
     }
 
-    for(int i = board[0] ; i <= board[9] ; i++){
+    for (int i = board[0]; i <= board[9]; i++)
+    {
 
-            if(i == a && i == b){
-                printf("#P12   ");
-            }
-            else if (i == a) { 
-                printf("#P1    "); 
-            } 
-            else if (i == b) { 
-                printf("#P2    "); 
-            } 
-            else{
-            printf("%d      " , i);
-            }
+        if (i == a && i == b)
+        {
+            printf("#P12   ");
+        }
+        else if (i == a)
+        {
+            printf("#P1    ");
+        }
+        else if (i == b)
+        {
+            printf("#P2    ");
+        }
+        else
+        {
+            printf("%d      ", i);
+        }
     }
     printf("\n");
 }
-void maingame()
+
+// Processes how the Players act according to the dice and how they move
+int maingame()
 {
     while (p1 != 100 || p2 != 100)
     {
@@ -165,7 +209,7 @@ void maingame()
             }
             else if (p1 + c == 100)
             {
-                printf("P1 wins!");
+                return 1;
                 exit(0);
             }
             else
@@ -195,7 +239,7 @@ void maingame()
             }
             else if (p2 + c == 100)
             {
-                printf("P2 wins!");
+                return 2;
                 exit(0);
             }
             else
@@ -255,23 +299,42 @@ void maingame()
             break;
         }
     }
+    return 0;
 }
 
+// Main function which you see in the start of the program
 int main()
 {
     int n;
+    int c;
+    char p1name[100];
+    char p2name[100];
+    // Inputs the name of the players
+    printf("Enter the name of P1 : ");
+    scanf("%s", p1name);
+    printf("Enter the name of P2 : ");
+    scanf("%s", p2name);
     printf("=================================================\n");
-    printf("To start press 1, to exit press 0\n");
+    printf("To start press 1\n");
+    printf("To exit press 0\n");
+    printf("=================================================\n");
     printf("Enter your choice: ");
     scanf("%d", &n);
-    printf("=================================================\n");
     if (n == 0)
     {
         printf("Program is ending!");
     }
     else if (n == 1)
     {
-        maingame();
+        c = maingame();
+        if (c == 1)
+        {
+            printf("%s has won the game!!", p1name);
+        }
+        else if (c == 2)
+        {
+            printf("%s has won the game!!", p2name);
+        }
     }
 
     return 0;
