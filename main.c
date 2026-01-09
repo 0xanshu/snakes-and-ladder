@@ -6,6 +6,8 @@ int p1 = 0, p2 = 0;
 int c, turn;
 int board[100];
 char ch;
+char p1name[100];
+char p2name[100];
 
 // Gives out a random number between 1 and 6, and acts like a virtual dice
 int dice()
@@ -31,10 +33,46 @@ void clearTerminal()
 #endif
 }
 
+// Saves the game in save.txt file
+void savegame()
+{
+    FILE *fptr;
+    fptr = fopen("save.txt", "w");
+    if (fptr == NULL)
+    {
+        printf("The file was unabble to open. Saving not done.");
+        exit(0);
+    }
+    else
+    {
+        fprintf(fptr, "%s %s %d %d", p1name, p2name, p1, p2);
+        fclose(fptr);
+    }
+}
+
+// Loads the game from save.txt file in the same directory
+void loadgame()
+{
+    FILE *fptr;
+    fptr = fopen("save.txt", "r");
+    printf("OK\n");
+    if (fptr == NULL)
+    {
+        printf("The file was unabble to open. Loading not done.");
+        exit(0);
+    }
+    else
+    {
+        fscanf(fptr, "%s %s %d %d", p1name, p2name, &p1, &p2);
+        fclose(fptr);
+    }
+    printf("%s %s %d %d\n", p1name, p2name, p1, p2);
+}
+
 // Creates the layout for the game and also prints the position of Player 1 and Player 2 on the board
 void layout(int a, int b)
 {
-
+    printf("\n");
     for (int i = 0; i < 100; i++)
     {
         board[i] = i + 1;
@@ -87,6 +125,16 @@ void layout(int a, int b)
             printf(" #P2  ");
         }
 
+        else if (i == 98 || i == 93)
+        {
+            printf(" (%d)  ", i);
+        }
+
+        else if (i == 91)
+        {
+            printf(" /%d/  ", i);
+        }
+
         else
         {
             printf(" %d    ", i);
@@ -118,6 +166,21 @@ void layout(int a, int b)
                     printf("#P2   ");
                 }
 
+                else if (j == 98 || j == 93 || j == 17)
+                {
+                    printf("(%d)   ", j);
+                }
+
+                else if (j == 73 || j == 39)
+                {
+                    printf("/%d/   ", j);
+                }
+
+                else if (j == 76 || j == 54 || j == 32)
+                {
+                    printf("|%d|   ", j);
+                }
+
                 else
                 {
                     printf("%d     ", j);
@@ -146,6 +209,22 @@ void layout(int a, int b)
                 {
                     printf("#P2   ");
                 }
+
+                else if (k == 62 || k == 64 || k == 86)
+                {
+                    printf("(%d)   ", k);
+                }
+
+                else if (k == 89 || k == 43 || k == 21)
+                {
+                    printf("/%d/   ", k);
+                }
+
+                else if (k == 84 || k == 66 || k == 48)
+                {
+                    printf("|%d|   ", k);
+                }
+
                 else
                 {
                     printf("%d     ", k);
@@ -172,6 +251,12 @@ void layout(int a, int b)
         {
             printf("#P2    ");
         }
+
+        else if (i == 7)
+        {
+            printf("(%d)    ", i);
+        }
+
         else
         {
             printf("%d      ", i);
@@ -189,113 +274,134 @@ int maingame()
         c = dice();
         printf("\nPress enter to roll the dice...\n");
         ch = getchar();
-        clearTerminal();
-        if (turn % 2 != 0)
+        if (ch == 10)
         {
-            if (p1 + c > 100)
+            clearTerminal();
+            if (turn % 2 != 0)
             {
-                turn++;
-            }
-            else if (p1 == 0)
-            {
-                if (c == 6)
+                if (p1 + c > 100)
                 {
-                    p1 = 1;
+                    turn++;
+                }
+                else if (p1 == 0)
+                {
+                    if (c == 6)
+                    {
+                        p1 = 1;
+                    }
+                    else
+                    {
+                        turn++;
+                    }
+                }
+                else if (p1 + c == 100)
+                {
+                    return 1;
+                    exit(0);
                 }
                 else
                 {
                     turn++;
+                    p1 += c;
                 }
-            }
-            else if (p1 + c == 100)
-            {
-                return 1;
-                exit(0);
+                printf("P1 rolled %d in the dice\n\n", c);
             }
             else
             {
-                turn++;
-                p1 += c;
-            }
-            printf("P1 rolled %d in the dice\n\n", c);
-        }
-        else
-        {
 
-            if (p2 + c > 100)
-            {
-                turn++;
-            }
-            else if (p2 == 0)
-            {
-                if (c == 6)
+                if (p2 + c > 100)
                 {
-                    p2 = 1;
+                    turn++;
+                }
+                else if (p2 == 0)
+                {
+                    if (c == 6)
+                    {
+                        p2 = 1;
+                    }
+                    else
+                    {
+                        turn++;
+                    }
+                }
+                else if (p2 + c == 100)
+                {
+                    return 2;
+                    exit(0);
                 }
                 else
                 {
                     turn++;
+                    p2 += c;
                 }
+                printf("P2 rolled %d in the dice\n\n", c);
             }
-            else if (p2 + c == 100)
-            {
-                return 2;
-                exit(0);
-            }
-            else
-            {
-                turn++;
-                p2 += c;
-            }
-            printf("P2 rolled %d in the dice\n\n", c);
-        }
 
-        switch (p1)
-        {
-        case 6:
-            p1 = 40;
-            break;
-        case 23:
-            p1 = 13;
-            break;
-        case 45:
-            p1 = 38;
-            break;
-        case 61:
-            p1 = 43;
-            break;
-        case 65:
-            p1 = 57;
-            break;
-        case 77:
-            p1 = 82;
-            break;
-        case 98:
-            p1 = 88;
-            break;
+            // Defines the snakes and ladders in the game
+            switch (p1)
+            {
+                // Snakes
+            case 17:
+                p1 = 7;
+                break;
+            case 62:
+                p1 = 19;
+                break;
+            case 86:
+                p1 = 37;
+                break;
+            case 93:
+                p1 = 69;
+                break;
+            case 98:
+                p1 = 80;
+                break;
+                // Ladders
+            case 21:
+                p1 = 43;
+                break;
+            case 32:
+                p1 = 84;
+                break;
+            case 73:
+                p1 = 91;
+                break;
+            }
+            switch (p2)
+            {
+                // Snakes
+            case 17:
+                p1 = 7;
+                break;
+            case 62:
+                p1 = 19;
+                break;
+            case 86:
+                p1 = 37;
+                break;
+            case 93:
+                p1 = 69;
+                break;
+            case 98:
+                p1 = 80;
+                break;
+                // Ladders
+            case 21:
+                p1 = 43;
+                break;
+            case 32:
+                p1 = 84;
+                break;
+            case 73:
+                p1 = 91;
+                break;
+            }
         }
-        switch (p2)
+        else if (ch == 57)
         {
-        case 6:
-            p2 = 40;
-            break;
-        case 23:
-            p2 = 13;
-            break;
-        case 45:
-            p2 = 38;
-            break;
-        case 61:
-            p2 = 43;
-            break;
-        case 65:
-            p2 = 57;
-            break;
-        case 77:
-            p2 = 82;
-            break;
-        case 98:
-            p2 = 88;
+            printf("SAVING...\n");
+            savegame();
+            printf("GAME SAVED.....EXITING THE GAME! BYE!!\n");
             break;
         }
     }
@@ -307,33 +413,45 @@ int main()
 {
     int n;
     int c;
-    char p1name[100];
-    char p2name[100];
     // Inputs the name of the players
-    printf("Enter the name of P1 : ");
+    printf("Enter the name of P1: ");
     scanf("%s", p1name);
-    printf("Enter the name of P2 : ");
+    printf("Enter the name of P2: ");
     scanf("%s", p2name);
     printf("=================================================\n");
-    printf("To start press 1\n");
-    printf("To exit press 0\n");
+    printf("To enter the snake world enter 1\n");
+    printf("To load a previous game enter 2\n");
+    printf("To exit out enter 0\n");
     printf("=================================================\n");
     printf("Enter your choice: ");
     scanf("%d", &n);
     if (n == 0)
     {
-        printf("Program is ending!");
+        printf("Meet you again, BYE!!");
     }
     else if (n == 1)
     {
         c = maingame();
         if (c == 1)
         {
-            printf("%s has won the game!!", p1name);
+            printf("Congo! %s has won and reached the home!!", p1name);
         }
         else if (c == 2)
         {
-            printf("%s has won the game!!", p2name);
+            printf("Congo! %s has won and reached the home!!", p2name);
+        }
+    }
+    else if (n == 2)
+    {
+        loadgame();
+        c = maingame();
+        if (c == 1)
+        {
+            printf("Congo! %s has won and reached the home!!", p1name);
+        }
+        else if (c == 2)
+        {
+            printf("Congo! %s has won and reached the home!!", p2name);
         }
     }
 
